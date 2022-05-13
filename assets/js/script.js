@@ -3,33 +3,38 @@ var generateBtn = document.querySelector("#generate");
 var passlenght1 = 0;
 var lowercasevar = 0;
 var passlenght = 0;
-var passwordstructure = []
+
+
 
 
 // Variable declaration 
 var prompts = [{
-            "message": "Please enter how many numbers you want in your password between 8 and 128" ,
-            "alert": "Please enter a value between 8 and 128",
+            "message": "Please enter how many numbers you want in your password between " ,
+            "alert": 'Please enter a value between ',
             "charMin": 8,
             "charMax": 128,
+            "DataType": "0123456789"
               },
               {
-                "message": "Please enter how many numbers you want in your password between 8 and 128" ,
-                "alert": "Please enter a value between 8 and 128",
-                "charMin": 8,
-                "charMax": 128,
+                "message": "Please enter how many lowercase letters you want in your password between " ,
+                "alert": 'Please enter a value between ',
+                "charMin": 3,
+                "charMax": 15,
+                "DataType": "abcdefghijklmnopqrstuvwxyz"
               },
               {
-                "message": "Please enter how many numbers you want in your password between 8 and 128" ,
-                "alert": "Please enter a value between 8 and 128",
-                "charMin": 8,
-                "charMax": 128,
+                "message": "Please enter how Upper case you want in your password between " ,
+                "alert": "Please enter a value between ",
+                "charMin": 5,
+                "charMax": 10,
+                "DataType": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
               },
               {
-                "message": "Please enter how many numbers you want in your password between 8 and 128" ,
-                "alert": "Please enter a value between 8 and 128",
-                "charMin": 8,
-                "charMax": 128,
+                "message": "Please enter how symbols you want in your password between " ,
+                "alert": "Please enter a value between ",
+                "charMin": 2,
+                "charMax": 4,
+                "DataType": "!@#%^&*()_+=~@"
               }
             ]
 
@@ -37,75 +42,63 @@ var prompts = [{
 
 
 
-function generatePassword() {
+function generatePassword(passwordstructure) {
+var GenPassword = ""
+var mixerpass = ""
+passwordstructure.forEach(element => {
 
-  console.log("generate password");
-  return(1233);
+  
+  var charachterstochose = element.Datatype;
+  var charsLength = charachterstochose.length;
+  for ( var ii = 0; ii < element.chars; ii++ ) {
+    GenPassword += charachterstochose.charAt(Math.floor(Math.random() * charsLength));
+ }
+ mixerpass = GenPassword.split('').sort(function(){return 0.5-Math.random()}).join('');
+ 
+ 
+
+  
+});
+
+
+  return(mixerpass);
 }
+
+
+
 
 function writePassword() {
+var passwordstructure = []
 var i = 0
+
 while (i < prompts.length) {
-  alert(prompts[i].alert)
+configurepassword()
+
+function configurepassword() {
+
+var promptmessage = prompts[i].message + ((prompts[i].charMin).toString()) + " and " +((prompts[i].charMax).toString())
+var alertmessage =  prompts[i].alert + (toString(prompts[i].charMin)) + (toString(prompts[i].charMax))
+var floatprompt = prompt(promptmessage)
+if (floatprompt > prompts[i].charMin && floatprompt < prompts[i].charMax){
+  data = {
+    "chars": floatprompt,
+    "Datatype":   prompts[i].DataType}
+
+  passwordstructure.push(data)
   i++
-}
-  
-
-var passlenght = prompt("Please enter how many numbers you want in your password between 8 and 128" );
-passlenght1 = passlenght
-if (passlenght > 8 && passlenght < 128){
-  SecondPromt()
-}else if (passlenght === null){
-  return
+}else if (floatprompt === null){
+  configurepassword()
 }else{
-  alert("Please enter a value between 8 and 128");
-  writePassword(); 
+ alert(alertmessage);
+ configurepassword()
+}
+}
 }
 
+alert("while loop succeeed!!!! " + (passwordstructure).toString())
 
 
-
-var passlenght = prompt("Please enter how many numbers you want in your password between 8 and 128" );
-passlenght1 = passlenght
-if (passlenght > 8 && passlenght < 128){
-  SecondPromt()
-}else if (passlenght === null){
-  return
-}else{
-  alert("Please enter a value between 8 and 128");
-  writePassword(); 
-}
-  
-function SecondPromt() {
-  passlowerlenght = prompt("Please enter number lowercase characters between 3 adn 15", );
-  if (passlowerlenght === null) {
-    alert("Please enter a value between 3 and 15");
-    SecondPromt();
-  }else if (passlowerlenght > 15){
-    alert("The minimum characters is 15");
-    SecondPromt();
-  }else if (passlowerlenght < 3){
-    alert("The minimum characters is 3");
-    SecondPromt();
-  }else{
-    ThirdPromt();
-  }
-}
-
-function ThirdPromt() {
-  passsymbollength = prompt("Please enter number symbols ", );
-  if (passsymbollength < 3) {
-    alert("The minimum characters is 3");
-    ThirdPromt();
-  }else if (passsymbollength > 15){
-    alert("The minimum characters is 5");
-    ThirdPromt();
-  }else{
-   console.log(passlenght,  passlowerlenght, passlowerlenght)
-  }
-}
-
-  var password = generatePassword();
+  var password = generatePassword(passwordstructure);
   var passwordText = document.querySelector("#password");
   passwordText.value = password;
 }
