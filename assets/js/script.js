@@ -1,109 +1,116 @@
-// Assignment Code
+// Globals
 var generateBtn = document.querySelector("#generate");
-var passlenght1 = 0;
-var lowercasevar = 0;
-var passlenght = 0;
+let alternativemsg = "Becasue Security is important please try again using one of this options Numbers, LowerCase Letters, UpperCase Letters or Symbols and protect your information and equipment."
 
-
-
-
-// Variable declaration 
-var prompts = [{
-            "message": "Please enter how many numbers you want in your password between " ,
-            "alert": 'Please enter a value between ',
-            "charMin": 8,
-            "charMax": 128,
-            "DataType": "0123456789"
+// for future this will be good to add an admin page and make changes the configuration server side for new symbols, different lenguages,  kanji signs etc...
+// Declare Objects to create an easy way to add or remove chain of different characters
+var confirmsMsg = [{
+                "message": "Do you want to add Numbers" ,
+                "DataType": "0123456789"
               },
               {
-                "message": "Please enter how many lowercase letters you want in your password between " ,
-                "alert": 'Please enter a value between ',
-                "charMin": 3,
-                "charMax": 15,
-                "DataType": "abcdefghijklmnopqrstuvwxyz"
+                "message": "Do you want to add LowerCase letters" ,
+                "DataType": "abcdefghijklmnopqrstuvwxyz",
               },
               {
-                "message": "Please enter how Upper case you want in your password between " ,
-                "alert": "Please enter a value between ",
-                "charMin": 5,
-                "charMax": 10,
-                "DataType": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "message": "Do you want to add UpperCase letters" ,
+                "DataType": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
               },
               {
-                "message": "Please enter how symbols you want in your password between " ,
-                "alert": "Please enter a value between ",
-                "charMin": 2,
-                "charMax": 4,
-                "DataType": "!@#%^&*()_+=~@"
+                "message": "Do you want Symbols" ,
+                "DataType": "!@#%^&*()_+=~@",
               }
             ]
 
-              
-
-
-
-function generatePassword(passwordstructure) {
-var GenPassword = ""
-var mixerpass = ""
-passwordstructure.forEach(element => {
-
-  
-  var charachterstochose = element.Datatype;
-  var charsLength = charachterstochose.length;
-  for ( var ii = 0; ii < element.chars; ii++ ) {
-    GenPassword += charachterstochose.charAt(Math.floor(Math.random() * charsLength));
- }
- mixerpass = GenPassword.split('').sort(function(){return 0.5-Math.random()}).join('');
- 
- 
-
-  
-});
-
-
-  return(mixerpass);
-}
-
-
-
-
+// this function will lead the prompts in base of the configuration objects in Prompts 
 function writePassword() {
-var passwordstructure = []
-var i = 0
 
-while (i < prompts.length) {
-configurepassword()
+  function generatePassword(passwordResult, passLenght) {
+    //generateBtn.innerHTML = "Password Ready!"
+    var GenPassword = ""
+    var mixerpass = ""
+    
+      //var charachterstochose = passwordResult;
+      console.log("this are the charachters to chose: " + passwordResult)
+      console.log("this is the numbers of charachters: " + passLenght)
+    
+    
+      if (passwordResult === "") {
+        var nothingtyped = confirm('Please select minimum one of the different types of charachters, \nDo you wanto to try again?')
+        if (nothingtyped){
+          writePassword()
+        }else {
+         mixerpass = alternativemsg
+         return(mixerpass)
+          
+        }
+        }else {
+          var maxchar = passwordResult.length;
+          for ( var ii = 0; ii < passLenght; ii++ ) {
+            var random = Math.floor(Math.random() * maxchar);
+            GenPassword = GenPassword + passwordResult.charAt(random);
+          
+              
+         }
+         console.log(GenPassword);
+         console.log(typeof(GenPassword));
+         //Mix the charachters for doubble unique sequence.
+         mixerpass = GenPassword.split('').sort(function(){return 0.5-Math.random()}).join('');
+          
+        // return password to be written into the front end
+          return(mixerpass);
+        }
+        
+      }
+      
+  
+  var passwordResult = "";
+  
+  var passLenght = prompt("Please write the number of charachters in your password between 8 and 128");
+  
+  console.log()
+  if (passLenght > 8 && passLenght < 128) {
+    
+      confirmsMsg.forEach(element => { 
+        var confirmResult = confirm(element.message)
+        if (confirmResult) {
+          passwordResult += element.DataType
+          
+        }   
+      }
+      );
 
-function configurepassword() {
+   
+      
+   }else {
+    alert("Please write a valid number between 8 and 128");
+    writePassword()
+    }
 
-var promptmessage = prompts[i].message + ((prompts[i].charMin).toString()) + " and " +((prompts[i].charMax).toString())
-var alertmessage =  prompts[i].alert + (toString(prompts[i].charMin)) + (toString(prompts[i].charMax))
-var floatprompt = prompt(promptmessage)
-if (floatprompt > prompts[i].charMin && floatprompt < prompts[i].charMax){
-  data = {
-    "chars": floatprompt,
-    "Datatype":   prompts[i].DataType}
+  
 
-  passwordstructure.push(data)
-  i++
-}else if (floatprompt === null){
-  configurepassword()
-}else{
- alert(alertmessage);
- configurepassword()
-}
-}
-}
-
-alert("while loop succeeed!!!! " + (passwordstructure).toString())
-
-
-  var password = generatePassword(passwordstructure);
+  // call generatePassword function and passing arguments for password structure
+  var password = generatePassword(passwordResult, passLenght);
   var passwordText = document.querySelector("#password");
+  
   passwordText.value = password;
+  if (password !== alternativemsg) {
+    generateBtn.innerHTML = "Well Done!"
+    setTimeout(function(){
+      generateBtn.innerHTML = "Generate a new Password"
+      
+    }, 3000)
+  }else {
+    generateBtn.innerHTML = "Try Again!!"
+    setTimeout(function(){
+      generateBtn.innerHTML = "Generate Password"
+      
+    }, 3000)
+  }
+  
 }
 
 // Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
-
+//generateBtn.addEventListener("click", writePassword);document.getElementById("generate").innerHTML = "Processing..."
+generateBtn.addEventListener("click",  writePassword)
 
