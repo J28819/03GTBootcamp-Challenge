@@ -56,7 +56,7 @@ function writePassword() {
       );
    }else {
     alert("Please write a valid number between 8 and 128");
-    writePassword()
+    return
     }
 
     if (passwordResult === "") {
